@@ -13,9 +13,9 @@ def error_message(message, driver):
 
 def color_value(value):
     # Colora il valore delle flag perse
-    if value == "0":
+    if value == "0" or int(value) > 0:
         value_colored = f"\033[1;32m{value:^15}\033[0m"  # Verde se 0
-    elif value.startswith("-") or int(value) > 0:
+    elif value.startswith("-"):
         value_colored = f"\033[1;31m{value:^15}\033[0m"  # Rosso se >0 o negativo
     else:
         value_colored = f"\033[1;33m{value:^15}\033[0m"  # Giallo per altri casi

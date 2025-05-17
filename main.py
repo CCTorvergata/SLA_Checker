@@ -5,6 +5,7 @@ from printer import *
 from console import *
 from chrome import *
 from service import *
+from selenium.common.exceptions import WebDriverException
 
 # Configurazione
 URL = "http://10.10.0.1/scoreboard"
@@ -13,11 +14,12 @@ WAIT_TIME = 5  # Tempo di attesa per il caricamento JS
 LOOP_INTERVAL = 1 # Intervallo tra i controlli (in secondi)
 
 def main():
+    clear_console()
+    print_header()
+    print_info(f"Caricamento della pagina {URL}...")
     while True:
         driver = start_chrome()
         try:
-            print_header()
-            print_info(f"Caricamento della pagina {URL}...")
             driver.get(URL)
             time.sleep(WAIT_TIME)
 
@@ -37,6 +39,13 @@ def main():
             else:
                 print_error(f"Nessuna riga trovata contenente l'IP {TEAM_IP}")
 
+        except WebDriverException as e:
+            print_error(f"Errore WebDriver: {e.msg}")
+            if driver:
+                stop_chrome(driver)
+            print_info("Riavvio il driver tra 5 secondi...")
+            time.sleep(5)
+            continue  # Riprova subito il ciclo
         except Exception as e:
             clear_console()
             print_error("Si è verificato un errore durante il caricamento della pagina o l'analisi dei dati: " + str(e))

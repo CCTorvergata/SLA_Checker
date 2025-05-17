@@ -1,5 +1,6 @@
 from printer import *
 from console import *
+from main import URL
 
 def extract_service_names(thead_rows):
     if len(thead_rows) >= 2:
@@ -7,6 +8,8 @@ def extract_service_names(thead_rows):
         service_names = [th.get_text(strip=True) for th in services_row.find_all("th")[3:]]  # Salta le prime 4 colonne (Team, Score...)
         clear_console()
 
+        print_header()
+        print_info(f"Caricamento della pagina {URL}...")
         print("\033[92mServizi trovati:\033[0m")
         header = " | ".join([f"{name:^15}" for name in service_names])
         width = len(header)
@@ -32,8 +35,8 @@ def print_service_matrix(service_names, sla_values, flag_values, attack_catched_
     flag_line = " | ".join(flag_values)
     attack_line = " | ".join(attack_catched_values)
     width = len(header)-10
-    print("\n" + header.center(width))
+    print("\n" + f"{'Name':<8} | {header}".center(width))
     print("-" * width)
-    print(values_line.center(width))
-    print(flag_line.center(width))
-    print(attack_line.center(width) + "\n")
+    print(f"{'SLA':<8} | {values_line}".center(width))
+    print(f"{'defense':<8} | {flag_line}".center(width))
+    print(f"{'attack':<8} | {attack_line}".center(width) + "\n")

@@ -1,5 +1,6 @@
 import re
 from sla import *
+import time
 
 def process_team_row(team_row, service_names):
     # Estrai le colonne (td) e stampa la SLA
@@ -7,23 +8,26 @@ def process_team_row(team_row, service_names):
     for i, td in enumerate(columns):
         if i == 0:
             print(f"\n\033[1;33m{'Posizione: ' + td.get_text(strip=True):^50}\033[0m\n")
-        elif i != 1 & i != 2:
+        elif i not in (1, 2, 3):
             sla_text = td.get_text(strip=True)
             #print(sla_text) # Stampa il testo grezzo per debug
             # Estrai i valori tra parentesi tonde: attacco (primo), difesa totale (secondo), flag perse (terzo)
-            flag_matches = re.findall(r"\(([-\d]+)\)", sla_text)
+            flag_matches = re.findall(r"\(([-+\d]+)\)", sla_text)
             attack_value = flag_matches[0] if len(flag_matches) > 0 else "0"
             if attack_value == "0":
                 attack_catched = "0"
                 defense_value = flag_matches[1] if len(flag_matches) > 1 else "0"
-                flags_lost = flag_matches[2] if len(flag_matches) > 2 else "0"
-            else:
-                attack_catched = flag_matches[1] if len(flag_matches) > 0 else "0"
-                defense_value = flag_matches[2] if len(flag_matches) > 1 else "0"
-                if defense_value == "0":
+                if defense_value == "0" or len(flag_matches) < 3:
                     flags_lost = "0"
                 else:
-                    flags_lost = flag_matches[3] if len(flag_matches) > 2 else "0"
+                    flags_lost = flag_matches[2] if len(flag_matches) > 2 else "0"
+            else:
+                attack_catched = flag_matches[1] if len(flag_matches) > 1 else "0"
+                defense_value = flag_matches[2] if len(flag_matches) > 2 else "0"
+                if defense_value == "0" or len(flag_matches) < 4:
+                    flags_lost = "0"
+                else:
+                    flags_lost = flag_matches[3] if len(flag_matches) > 3 else "0"
             match = re.search(r"(\d+\.\d+%)\s*([+-]\d+\.\d+)?", sla_text)
             if match:
                 if i == 4:
