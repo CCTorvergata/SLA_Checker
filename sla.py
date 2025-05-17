@@ -27,4 +27,4 @@ def process_sla_column(sla_value, sla_change, service_name, flags_lost, attack_c
 
     # Avvisa se lo SLA è negativo
     if sla_change and not sla_change.startswith("+"):
-        print_alert(f"SLA change is negative for {service_name}: {sla_change}")
+        print_alert(f"SLA change is negative for \033[1;31m{service_name}\033[0m: \033[91m{sla_change}\033[0m")
