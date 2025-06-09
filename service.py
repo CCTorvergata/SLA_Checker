@@ -12,6 +12,8 @@ def extract_service_names(thead_rows):
         if len(ths) >= 5:
             # Prendi i nomi dei servizi saltando le prime 3 colonne (icone, Team, Score)
             service_names = [th.get_text(strip=True) for th in ths[3:]]
+            # Rimuovi "Score" se presente tra i servizi
+            service_names = [name for name in service_names if name.lower() != "score"]
             services_row = row
             break
     if services_row:
