@@ -3,9 +3,18 @@ from console import *
 from main import URL
 
 def extract_service_names(thead_rows):
-    if len(thead_rows) >= 2:
-        services_row = thead_rows[1]
-        service_names = [th.get_text(strip=True) for th in services_row.find_all("th")[3:]]  # Salta le prime 4 colonne (Team, Score...)
+    service_names = []
+    # Cerca la riga che contiene le intestazioni dei servizi (dopo Team, Score, ecc.)
+    services_row = None
+    for row in thead_rows:
+        ths = row.find_all("th")
+        # Cerca una riga con almeno 5 colonne (Team, Score, e almeno un servizio)
+        if len(ths) >= 5:
+            # Prendi i nomi dei servizi saltando le prime 3 colonne (icone, Team, Score)
+            service_names = [th.get_text(strip=True) for th in ths[3:]]
+            services_row = row
+            break
+    if services_row:
         clear_console()
 
         print_header()
