@@ -8,7 +8,9 @@ def process_sla_column(sla_value, sla_change, service_name, flags_lost, attack_c
     # Estrai valori da match e service_names
     sla_value = match.group(1)
     sla_change = match.group(2) or ""
-    service_name = service_names[i - 5] if (i - 5) < len(service_names) else f"Servizio {i-4}"
+    # Shift circolare a sinistra di 1 per il nome del servizio
+    shifted_index = (i - 5 + 1) % len(service_names) if len(service_names) > 0 else i - 4
+    service_name = service_names[shifted_index] if shifted_index < len(service_names) else f"Servizio {i-4}"
 
     # Inizializza le liste solo se necessario
     if i == 4:

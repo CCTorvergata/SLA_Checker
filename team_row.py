@@ -39,6 +39,10 @@ def process_team_row(team_row, service_names):
                 service_name = service_names[i - 5] if (i - 5) < len(service_names) else f"Servizio {i-4}"
 
                 # Usa la funzione estratta per processare i valori
+                # Correggi l'indice per allineare i nomi dei servizi con le colonne SLA
+                service_index = i - (len(columns) - len(service_names))
+                service_name = service_names[service_index] if 0 <= service_index < len(service_names) else f"Servizio {i}"
+
                 process_sla_column(
                     sla_value, sla_change, service_name, flags_lost, attack_catched,
                     sla_values, flag_values, attack_catched_values,
