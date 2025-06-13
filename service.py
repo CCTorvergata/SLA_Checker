@@ -4,21 +4,15 @@ from main import URL
 
 def extract_service_names(thead_rows):
     service_names = []
-    # Cerca la riga che contiene le intestazioni dei servizi (dopo Team, Score, ecc.)
-    services_row = None
-    for row in thead_rows:
-        ths = row.find_all("th")
-        # Cerca una riga con almeno 5 colonne (Team, Score, e almeno un servizio)
-        if len(ths) >= 5:
-            # Prendi i nomi dei servizi saltando le prime 3 colonne (icone, Team, Score)
-            service_names = [th.get_text(strip=True) for th in ths[3:]]
-            # Rimuovi "Score" se presente tra i servizi
-            service_names = [name for name in service_names if name.lower() != "score"]
-            services_row = row
-            break
-    if services_row:
+    # Cerca la seconda riga del thead (quella con i nomi dei servizi)
+    if len(thead_rows) >= 2:
+        service_row = thead_rows[1]
+        ths = service_row.find_all("th")
+        # I nomi dei servizi partono dalla quarta colonna (indice 3)
+        service_names = [th.get_text(strip=True) for th in ths[3:]]
+        # Rimuovi eventuali colonne vuote o non di servizio
+        service_names = [name for name in service_names if name and name.lower() not in ("score", "team", "#")]
         clear_console()
-
         print_header()
         print_info(f"Caricamento della pagina {URL}...")
         print("\033[92mServizi trovati:\033[0m")
